@@ -14,3 +14,12 @@ COMO FUNCIONA
 IMPORTANTE SOBRE REGRAS
 O sistema precisa de permissão de leitura e escrita no caminho /criminal2cia. Para teste, você pode usar as regras de firebase-rules-test.json. Elas são abertas e NÃO são recomendadas para produção.
 Para a versão definitiva, o ideal é ativar autenticação (Google ou login próprio) e restringir as regras aos usuários autorizados.
+
+
+CONTROLE DE EDIÇÃO (V7)
+- Consulta dos dashboards permanece livre.
+- Alterações exigem login de edição durante a sessão do navegador.
+- Login configurado: 140965
+- Senha configurada: 140965
+- O botão no topo permite entrar/sair do modo edição.
+- Importante: esta proteção é feita no front-end. Para segurança forte contra acesso direto ao Firebase, use Firebase Authentication e regras autenticadas.

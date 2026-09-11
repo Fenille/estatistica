@@ -25,7 +25,7 @@
     <main>
       <header class="topbar">
         <div><h1 id="pageTitle">Dashboard Criminal</h1><p id="pageSubtitle">Visão consolidada e dinâmica dos indicadores da 2ª Cia</p></div>
-        <div class="top-actions"><button class="btn secondary" id="exportCsvTop">Exportar CSV</button><button class="btn primary" data-go="new">+ Registrar delito</button></div>
+        <div class="top-actions"><button class="btn secondary" id="editAccessBtn">🔒 Entrar para editar</button><button class="btn secondary" id="exportCsvTop">Exportar CSV</button><button class="btn primary" data-go="new">+ Registrar delito</button></div>
       </header>
 
       <section id="dashboard" class="view active">
@@ -155,6 +155,20 @@
         </div>
       </section>
     </main>
+  </div>
+  <div id="authModal" class="auth-modal" aria-hidden="true">
+    <div class="auth-card">
+      <button type="button" class="auth-close" id="authClose" aria-label="Fechar">×</button>
+      <div class="auth-icon">🔐</div>
+      <h2>Acesso para edição</h2>
+      <p>Informe login e senha para liberar alterações no sistema.</p>
+      <form id="authForm">
+        <label>Login<input id="authLogin" inputmode="numeric" autocomplete="username" required></label>
+        <label>Senha<input id="authPassword" type="password" inputmode="numeric" autocomplete="current-password" required></label>
+        <div class="auth-error" id="authError"></div>
+        <button class="btn primary auth-submit" type="submit">Entrar</button>
+      </form>
+    </div>
   </div>
   <div id="toast" class="toast"></div>
   <script src="seed-data.js"></script>

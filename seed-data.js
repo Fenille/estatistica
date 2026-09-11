@@ -1183,6 +1183,368 @@ window.SEED_DATA = {
       "count": 2
     }
   ],
+  "goals": [
+    {
+      "id": "modelo-2026-01-homicidio",
+      "year": 2026,
+      "month": 1,
+      "group": "ALL",
+      "metric": "HOMICÍDIO",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-02-homicidio",
+      "year": 2026,
+      "month": 2,
+      "group": "ALL",
+      "metric": "HOMICÍDIO",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-03-homicidio",
+      "year": 2026,
+      "month": 3,
+      "group": "ALL",
+      "metric": "HOMICÍDIO",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-04-homicidio",
+      "year": 2026,
+      "month": 4,
+      "group": "ALL",
+      "metric": "HOMICÍDIO",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-05-homicidio",
+      "year": 2026,
+      "month": 5,
+      "group": "ALL",
+      "metric": "HOMICÍDIO",
+      "value": 1,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-06-homicidio",
+      "year": 2026,
+      "month": 6,
+      "group": "ALL",
+      "metric": "HOMICÍDIO",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-07-homicidio",
+      "year": 2026,
+      "month": 7,
+      "group": "ALL",
+      "metric": "HOMICÍDIO",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-08-homicidio",
+      "year": 2026,
+      "month": 8,
+      "group": "ALL",
+      "metric": "HOMICÍDIO",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-09-homicidio",
+      "year": 2026,
+      "month": 9,
+      "group": "ALL",
+      "metric": "HOMICÍDIO",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-10-homicidio",
+      "year": 2026,
+      "month": 10,
+      "group": "ALL",
+      "metric": "HOMICÍDIO",
+      "value": 1,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-11-homicidio",
+      "year": 2026,
+      "month": 11,
+      "group": "ALL",
+      "metric": "HOMICÍDIO",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-12-homicidio",
+      "year": 2026,
+      "month": 12,
+      "group": "ALL",
+      "metric": "HOMICÍDIO",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-01-veiculos",
+      "year": 2026,
+      "month": 1,
+      "group": "ALL",
+      "metric": "VEICULOS",
+      "value": 5,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-02-veiculos",
+      "year": 2026,
+      "month": 2,
+      "group": "ALL",
+      "metric": "VEICULOS",
+      "value": 3,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-03-veiculos",
+      "year": 2026,
+      "month": 3,
+      "group": "ALL",
+      "metric": "VEICULOS",
+      "value": 1,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-04-veiculos",
+      "year": 2026,
+      "month": 4,
+      "group": "ALL",
+      "metric": "VEICULOS",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-05-veiculos",
+      "year": 2026,
+      "month": 5,
+      "group": "ALL",
+      "metric": "VEICULOS",
+      "value": 2,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-06-veiculos",
+      "year": 2026,
+      "month": 6,
+      "group": "ALL",
+      "metric": "VEICULOS",
+      "value": 1,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-07-veiculos",
+      "year": 2026,
+      "month": 7,
+      "group": "ALL",
+      "metric": "VEICULOS",
+      "value": 1,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-08-veiculos",
+      "year": 2026,
+      "month": 8,
+      "group": "ALL",
+      "metric": "VEICULOS",
+      "value": 2,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-09-veiculos",
+      "year": 2026,
+      "month": 9,
+      "group": "ALL",
+      "metric": "VEICULOS",
+      "value": 1,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-10-veiculos",
+      "year": 2026,
+      "month": 10,
+      "group": "ALL",
+      "metric": "VEICULOS",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-11-veiculos",
+      "year": 2026,
+      "month": 11,
+      "group": "ALL",
+      "metric": "VEICULOS",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-12-veiculos",
+      "year": 2026,
+      "month": 12,
+      "group": "ALL",
+      "metric": "VEICULOS",
+      "value": 5,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-01-roubo-outros",
+      "year": 2026,
+      "month": 1,
+      "group": "ALL",
+      "metric": "ROUBO - OUTROS",
+      "value": 1,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-02-roubo-outros",
+      "year": 2026,
+      "month": 2,
+      "group": "ALL",
+      "metric": "ROUBO - OUTROS",
+      "value": 1,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-03-roubo-outros",
+      "year": 2026,
+      "month": 3,
+      "group": "ALL",
+      "metric": "ROUBO - OUTROS",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-04-roubo-outros",
+      "year": 2026,
+      "month": 4,
+      "group": "ALL",
+      "metric": "ROUBO - OUTROS",
+      "value": 1,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-05-roubo-outros",
+      "year": 2026,
+      "month": 5,
+      "group": "ALL",
+      "metric": "ROUBO - OUTROS",
+      "value": 1,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-06-roubo-outros",
+      "year": 2026,
+      "month": 6,
+      "group": "ALL",
+      "metric": "ROUBO - OUTROS",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-07-roubo-outros",
+      "year": 2026,
+      "month": 7,
+      "group": "ALL",
+      "metric": "ROUBO - OUTROS",
+      "value": 2,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-08-roubo-outros",
+      "year": 2026,
+      "month": 8,
+      "group": "ALL",
+      "metric": "ROUBO - OUTROS",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-09-roubo-outros",
+      "year": 2026,
+      "month": 9,
+      "group": "ALL",
+      "metric": "ROUBO - OUTROS",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-10-roubo-outros",
+      "year": 2026,
+      "month": 10,
+      "group": "ALL",
+      "metric": "ROUBO - OUTROS",
+      "value": 1,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-11-roubo-outros",
+      "year": 2026,
+      "month": 11,
+      "group": "ALL",
+      "metric": "ROUBO - OUTROS",
+      "value": 0,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "modelo-2026-12-roubo-outros",
+      "year": 2026,
+      "month": 12,
+      "group": "ALL",
+      "metric": "ROUBO - OUTROS",
+      "value": 1,
+      "source": "Planilha modelo",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    }
+  ],
   "population": {
     "Martinópolis": 24881,
     "Rancharia": 28588,

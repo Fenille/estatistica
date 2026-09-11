@@ -14,16 +14,62 @@ const OLD_KEY='criminal2cia_v2';
 const FIREBASE_DB_URL='https://criminal-76994-default-rtdb.firebaseio.com';
 const FIREBASE_ROOT='criminal2cia';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const EDIT_LOGIN='140965';
+const EDIT_PASSWORD='140965';
+const EDIT_SESSION_KEY='criminal2cia_edit_auth';
+let editAuthorized=sessionStorage.getItem(EDIT_SESSION_KEY)==='1';
+let pendingEditAction=null;
+
+function updateEditAccessUI(){
+  const b=$('#editAccessBtn');
+  if(!b)return;
+  b.textContent=editAuthorized?'🔓 Sair do modo edição':'🔒 Entrar para editar';
+  b.classList.toggle('edit-unlocked',editAuthorized);
+}
+function openAuth(action=null){
+  pendingEditAction=action;
+  $('#authError').textContent='';
+  $('#authLogin').value='';
+  $('#authPassword').value='';
+  $('#authModal').classList.add('show');
+  $('#authModal').setAttribute('aria-hidden','false');
+  setTimeout(()=>$('#authLogin').focus(),50);
+}
+function closeAuth(){
+  $('#authModal').classList.remove('show');
+  $('#authModal').setAttribute('aria-hidden','true');
+  pendingEditAction=null;
+}
+function requireEditAccess(action){
+  if(editAuthorized){ action(); return true; }
+  openAuth(action);
+  return false;
+}
+function logoutEdit(){
+  editAuthorized=false;
+  sessionStorage.removeItem(EDIT_SESSION_KEY);
+  updateEditAccessUI();
+  toast('Modo de edição bloqueado.');
+}
 
 function clone(v){return JSON.parse(JSON.stringify(v));}
-function blankState(){return {occurrences:clone(window.SEED_DATA.occurrences),theftLegacy:clone(window.SEED_DATA.theftLegacy),theftOverrides:[],population:window.SEED_DATA.population,goals:[]};}
+function modelGoals(){return clone(window.SEED_DATA.goals||[]);}
+function mergeModelGoals(x){
+  x.goals=Array.isArray(x.goals)?x.goals:[];
+  for(const g of modelGoals()){
+    const ix=x.goals.findIndex(v=>+v.year===+g.year&&+v.month===+g.month&&v.group===g.group&&v.metric===g.metric);
+    if(ix>=0)x.goals[ix]={...x.goals[ix],...g};
+    else x.goals.push(g);
+  }
+  return x;
+}
+function blankState(){return mergeModelGoals({occurrences:clone(window.SEED_DATA.occurrences),theftLegacy:clone(window.SEED_DATA.theftLegacy),theftOverrides:[],population:window.SEED_DATA.population,goals:[]});}
 function normalizeState(x){
   if(!x||!Array.isArray(x.occurrences))return null;
   x.theftLegacy=Array.isArray(x.theftLegacy)?x.theftLegacy:clone(window.SEED_DATA.theftLegacy);
   x.theftOverrides=Array.isArray(x.theftOverrides)?x.theftOverrides:[];
-  x.goals=Array.isArray(x.goals)?x.goals:[];
   x.population=x.population||window.SEED_DATA.population;
-  return x;
+  return mergeModelGoals(x);
 }
 function loadLocalState(){
   try{
@@ -93,7 +139,7 @@ function groupOf(m){return m==='Martinópolis'||m==='Rancharia'?m:'GPs';}
 function indicatorOf(c){if(c==='HOMICÍDIO')return 'Vítima de letalidade violenta';if(c==='FURTO DE VEÍCULO'||c==='ROUBO DE VEÍCULO')return 'Furto/Roubo de veículos';if(c==='ROUBO - OUTROS')return 'Roubo - outros';if(c==='FURTO')return 'Furtos totais';return 'Outros';}
 function fmtDate(v){if(!v)return '—';const [y,m,d]=v.split('-');return `${d}/${m}/${y}`;}
 function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2300);}
-function years(){const ys=new Set([2025,2026]);state.occurrences.forEach(r=>ys.add(+r.date.slice(0,4)));state.theftLegacy.forEach(r=>ys.add(+r.year));(state.theftOverrides||[]).forEach(r=>ys.add(+r.year));state.goals.forEach(g=>ys.add(+g.year));return [...ys].sort((a,b)=>b-a);}
+function years(){const currentYear=new Date().getFullYear();const ys=new Set([2025,2026,currentYear]);state.occurrences.forEach(r=>ys.add(+r.date.slice(0,4)));state.theftLegacy.forEach(r=>ys.add(+r.year));(state.theftOverrides||[]).forEach(r=>ys.add(+r.year));state.goals.forEach(g=>ys.add(+g.year));return [...ys].sort((a,b)=>b-a);}
 function monthsForPeriod(type,value){if(type==='MONTH')return [+value];if(type==='BIMONTH'){const start=(+value-1)*2+1;return [start,start+1];}return [1,2,3,4,5,6,7,8,9,10,11,12];}
 function selectedPeriod(){return {year:+$('#filterYear').value,type:$('#filterPeriodType').value,value:+($('#filterPeriodValue').value||0),months:monthsForPeriod($('#filterPeriodType').value,+($('#filterPeriodValue').value||0))};}
 function periodLabel(type,value,year){if(type==='MONTH')return `${MONTHS_LONG[+value-1]} de ${year}`;if(type==='BIMONTH')return `${value}º bimestre de ${year}`;return `Ano de ${year}`;}
@@ -190,41 +236,66 @@ function theftCsvText(){
 }
 
 function renderRecords(){const q=$('#searchRecords').value.toLowerCase(),m=$('#recordsMunicipality').value,c=$('#recordsCrime').value;const rows=[...state.occurrences].filter(r=>(m==='ALL'||r.municipality===m)&&(c==='ALL'||r.crime===c)&&(!q||(`${r.history} ${r.municipality} ${r.crime}`).toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date));$('#recordsBody').innerHTML=rows.map(r=>`<tr><td>${fmtDate(r.date)}</td><td><span class="pill">${r.crime}</span></td><td>${r.municipality}</td><td>${r.group}</td><td class="history">${r.history}</td><td><div class="row-actions"><button class="icon-btn edit" data-id="${r.id}">Editar</button><button class="icon-btn delete" data-id="${r.id}">Excluir</button></div></td></tr>`).join('')||'<tr><td colspan="6">Nenhum registro encontrado.</td></tr>';$$('.edit').forEach(b=>b.onclick=()=>editRecord(b.dataset.id));$$('.delete').forEach(b=>b.onclick=()=>deleteRecord(b.dataset.id));}
-function editRecord(id){const r=state.occurrences.find(x=>x.id===id);if(!r)return;$('#recordId').value=r.id;$('#recordDate').value=r.date;$('#recordMunicipality').value=r.municipality;$('#recordCrime').value=r.crime;$('#recordHistory').value=r.history;$('#recordResult').value=r.result||'';$('#recordNote').value=r.note||'';updateAutoClass();showView('new');}
-function deleteRecord(id){const r=state.occurrences.find(x=>x.id===id);if(!r)return;if(!confirm(`Excluir definitivamente o registro de ${fmtDate(r.date)} - ${r.crime}?`))return;state.occurrences=state.occurrences.filter(x=>x.id!==id);saveState();renderRecords();renderDashboard();toast('Registro excluído.');}
+function editRecord(id){requireEditAccess(()=>{const r=state.occurrences.find(x=>x.id===id);if(!r)return;$('#recordId').value=r.id;$('#recordDate').value=r.date;$('#recordMunicipality').value=r.municipality;$('#recordCrime').value=r.crime;$('#recordHistory').value=r.history;$('#recordResult').value=r.result||'';$('#recordNote').value=r.note||'';updateAutoClass();showView('new');});}
+function deleteRecord(id){requireEditAccess(()=>{const r=state.occurrences.find(x=>x.id===id);if(!r)return;if(!confirm(`Excluir definitivamente o registro de ${fmtDate(r.date)} - ${r.crime}?`))return;state.occurrences=state.occurrences.filter(x=>x.id!==id);saveState();renderRecords();renderDashboard();toast('Registro excluído.');});}
 function renderGoals(){const y=+$('#goalFilterYear').value,g=$('#goalFilterGroup').value;const rows=state.goals.filter(x=>+x.year===y&&(g==='ALL_FILTER'||x.group===g)).sort((a,b)=>a.month-b.month||a.metric.localeCompare(b.metric));$('#goalsBody').innerHTML=rows.map(x=>`<tr><td>${x.year}</td><td>${MONTHS_LONG[x.month-1]}</td><td>${x.group==='ALL'?'Toda 2ª Cia':x.group}</td><td>${METRICS[x.metric]}</td><td><b>${x.value}</b></td><td><div class="row-actions"><button class="icon-btn goal-edit" data-id="${x.id}">Editar</button><button class="icon-btn delete goal-delete" data-id="${x.id}">Excluir</button></div></td></tr>`).join('')||'<tr><td colspan="6">Nenhuma meta cadastrada para este filtro.</td></tr>';$$('.goal-edit').forEach(b=>b.onclick=()=>editGoal(b.dataset.id));$$('.goal-delete').forEach(b=>b.onclick=()=>deleteGoal(b.dataset.id));}
-function editGoal(id){const g=state.goals.find(x=>x.id===id);if(!g)return;$('#goalId').value=g.id;$('#goalYear').value=g.year;$('#goalMonth').value=g.month;$('#goalGroup').value=g.group;$('#goalMetric').value=g.metric;$('#goalValue').value=g.value;window.scrollTo({top:0,behavior:'smooth'});}
-function deleteGoal(id){const g=state.goals.find(x=>x.id===id);if(!g)return;if(!confirm(`Excluir a meta de ${MONTHS_LONG[g.month-1]} para ${METRICS[g.metric]}?`))return;state.goals=state.goals.filter(x=>x.id!==id);saveState();renderGoals();renderDashboard();toast('Meta excluída.');}
+function editGoal(id){requireEditAccess(()=>{const g=state.goals.find(x=>x.id===id);if(!g)return;$('#goalId').value=g.id;$('#goalYear').value=g.year;$('#goalMonth').value=g.month;$('#goalGroup').value=g.group;$('#goalMetric').value=g.metric;$('#goalValue').value=g.value;window.scrollTo({top:0,behavior:'smooth'});});}
+function deleteGoal(id){requireEditAccess(()=>{const g=state.goals.find(x=>x.id===id);if(!g)return;if(!confirm(`Excluir a meta de ${MONTHS_LONG[g.month-1]} para ${METRICS[g.metric]}?`))return;state.goals=state.goals.filter(x=>x.id!==id);saveState();renderGoals();renderDashboard();toast('Meta excluída.');});}
 function clearGoalForm(){$('#goalForm').reset();$('#goalId').value='';$('#goalYear').value=$('#filterYear').value;}
 function renderComparative(){const a=+$('#compYearA').value,b=+$('#compYearB').value,m=$('#compMetric').value,sa=metricSeries(a,m),sb=metricSeries(b,m),ta=sa.reduce((x,y)=>x+y,0),tb=sb.reduce((x,y)=>x+y,0),d=prevDelta(ta,tb);$('#compKpis').innerHTML=kpiCard(`Total ${a}`,ta)+kpiCard(`Total ${b}`,tb)+kpiCard('Variação',d===null?'—':`${d>0?'+':''}${d.toFixed(1)}%`,d>0?'Aumento':'Redução')+kpiCard('Diferença absoluta',ta-tb);$('#compSubtitle').textContent=`${a} em amarelo • ${b} em cinza`;lineChart($('#comparisonChart'),sa,MONTHS,sb);const vals=MUNICIPALITIES.map(n=>[n,municipalityMetric(a,m,n)-municipalityMetric(b,m,n)]).sort((x,y)=>Math.abs(y[1])-Math.abs(x[1]));barList($('#comparisonRanking'),vals.map(x=>[`${x[0]} (${x[1]>0?'+':''}${x[1]})`,Math.abs(x[1])]))}
 function renderStatus(){$('#dataStatus').innerHTML=`<div class="status-item"><span>Históricos detalhados</span><b>${state.occurrences.length}</b></div><div class="status-item"><span>Linhas importadas de Furto outros</span><b>${state.theftLegacy.length}</b></div><div class="status-item"><span>Lançamentos/correções de Furto outros</span><b>${(state.theftOverrides||[]).length}</b></div><div class="status-item"><span>Metas cadastradas</span><b>${state.goals.length}</b></div><div class="status-item"><span>Municípios</span><b>${MUNICIPALITIES.length}</b></div><div class="status-item"><span>Armazenamento principal</span><b>${firebaseOnline?'Firebase Realtime Database':'Cópia local (offline)'}</b></div>`;}
 function download(name,text,type='text/plain'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();URL.revokeObjectURL(a.href);}
 function csvText(){const q=s=>`"${String(s??'').replaceAll('"','""')}"`;return ['Data,Delito,Município,Grupo,Histórico,Resultado,Observação,Fonte',...state.occurrences.map(r=>[r.date,r.crime,r.municipality,r.group,r.history,r.result||'',r.note||'',r.source||'Sistema'].map(q).join(','))].join('\n');}
 
-$$('.nav-btn').forEach(b=>b.onclick=()=>showView(b.dataset.view));
-$$('[data-go]').forEach(b=>b.onclick=()=>showView(b.dataset.go));
+$$('.nav-btn').forEach(b=>b.onclick=()=>{const target=b.dataset.view;if(target==='new')requireEditAccess(()=>showView(target));else showView(target);});
+$$('[data-go]').forEach(b=>b.onclick=()=>{const target=b.dataset.go;if(target==='new')requireEditAccess(()=>showView(target));else showView(target);});
 ['filterYear','filterGroup','filterCrime','filterPeriodValue'].forEach(id=>$('#'+id).onchange=renderDashboard);
 $('#filterPeriodType').onchange=()=>{updatePeriodFilter();renderDashboard();};
 $('#resetFilters').onclick=()=>{$('#filterYear').value='2026';$('#filterPeriodType').value='YEAR';updatePeriodFilter();$('#filterGroup').value='ALL';$('#filterCrime').value='ALL';renderDashboard();};
 $('#recordMunicipality').onchange=updateAutoClass;$('#recordCrime').onchange=updateAutoClass;
 $('#clearForm').onclick=()=>{$('#recordForm').reset();$('#recordId').value='';updateAutoClass();};
-$('#recordForm').onsubmit=e=>{e.preventDefault();const id=$('#recordId').value||`r-${Date.now()}`;const rec={id,date:$('#recordDate').value,municipality:$('#recordMunicipality').value,group:groupOf($('#recordMunicipality').value),crime:$('#recordCrime').value,history:$('#recordHistory').value.trim(),result:$('#recordResult').value,note:$('#recordNote').value.trim(),source:'Sistema',legacy:false,updatedAt:new Date().toISOString()};const ix=state.occurrences.findIndex(x=>x.id===id);if(ix>=0)state.occurrences[ix]={...state.occurrences[ix],...rec};else state.occurrences.push(rec);saveState();refreshCrimeFilter();$('#recordForm').reset();$('#recordId').value='';updateAutoClass();renderDashboard();toast(ix>=0?'Registro atualizado.':'Histórico salvo e estatísticas atualizadas.');};
+$('#recordForm').onsubmit=e=>{e.preventDefault();requireEditAccess(()=>{const id=$('#recordId').value||`r-${Date.now()}`;const rec={id,date:$('#recordDate').value,municipality:$('#recordMunicipality').value,group:groupOf($('#recordMunicipality').value),crime:$('#recordCrime').value,history:$('#recordHistory').value.trim(),result:$('#recordResult').value,note:$('#recordNote').value.trim(),source:'Sistema',legacy:false,updatedAt:new Date().toISOString()};const ix=state.occurrences.findIndex(x=>x.id===id);if(ix>=0)state.occurrences[ix]={...state.occurrences[ix],...rec};else state.occurrences.push(rec);saveState();refreshCrimeFilter();$('#recordForm').reset();$('#recordId').value='';updateAutoClass();renderDashboard();toast(ix>=0?'Registro atualizado.':'Histórico salvo e estatísticas atualizadas.');});};
 ['searchRecords','recordsMunicipality','recordsCrime'].forEach(id=>$('#'+id).addEventListener(id==='searchRecords'?'input':'change',renderRecords));
-$('#goalForm').onsubmit=e=>{e.preventDefault();const payload={id:$('#goalId').value||`g-${Date.now()}`,year:+$('#goalYear').value,month:+$('#goalMonth').value,group:$('#goalGroup').value,metric:$('#goalMetric').value,value:+$('#goalValue').value,updatedAt:new Date().toISOString()};const duplicate=state.goals.findIndex(g=>g.id!==payload.id&&g.year===payload.year&&g.month===payload.month&&g.group===payload.group&&g.metric===payload.metric);if(duplicate>=0){if(!confirm('Já existe uma meta para este mesmo ano, mês, território e indicador. Deseja substituí-la?'))return;state.goals.splice(duplicate,1);}const ix=state.goals.findIndex(g=>g.id===payload.id);if(ix>=0)state.goals[ix]=payload;else state.goals.push(payload);saveState();clearGoalForm();populateGoalYearsOnly();renderGoals();renderDashboard();toast(ix>=0?'Meta atualizada.':'Meta cadastrada com sucesso.');};
+$('#goalForm').onsubmit=e=>{e.preventDefault();requireEditAccess(()=>{const payload={id:$('#goalId').value||`g-${Date.now()}`,year:+$('#goalYear').value,month:+$('#goalMonth').value,group:$('#goalGroup').value,metric:$('#goalMetric').value,value:+$('#goalValue').value,updatedAt:new Date().toISOString()};const duplicate=state.goals.findIndex(g=>g.id!==payload.id&&g.year===payload.year&&g.month===payload.month&&g.group===payload.group&&g.metric===payload.metric);if(duplicate>=0){if(!confirm('Já existe uma meta para este mesmo ano, mês, território e indicador. Deseja substituí-la?'))return;state.goals.splice(duplicate,1);}const ix=state.goals.findIndex(g=>g.id===payload.id);if(ix>=0)state.goals[ix]=payload;else state.goals.push(payload);saveState();clearGoalForm();populateGoalYearsOnly();renderGoals();renderDashboard();toast(ix>=0?'Meta atualizada.':'Meta cadastrada com sucesso.');});};
 function populateGoalYearsOnly(){const ys=years(),curFilter=$('#goalFilterYear').value,curGoal=$('#goalYear').value;const html=ys.map(y=>`<option>${y}</option>`).join('');$('#goalYear').innerHTML=html;$('#goalFilterYear').innerHTML=html;if(ys.includes(+curGoal))$('#goalYear').value=curGoal;if(ys.includes(+curFilter))$('#goalFilterYear').value=curFilter;}
 $('#clearGoalForm').onclick=clearGoalForm;$('#goalFilterYear').onchange=renderGoals;$('#goalFilterGroup').onchange=renderGoals;
-$('#theftQtyForm').onsubmit=e=>{e.preventDefault();const payload={year:+$('#theftQtyYear').value,month:+$('#theftQtyMonth').value,municipality:$('#theftQtyMunicipality').value,count:+$('#theftQtyValue').value,updatedAt:new Date().toISOString()};if(payload.count<0||!Number.isFinite(payload.count))return;state.theftOverrides=state.theftOverrides||[];const ix=state.theftOverrides.findIndex(r=>+r.year===payload.year&&+r.month===payload.month&&r.municipality===payload.municipality);if(ix>=0)state.theftOverrides[ix]={...state.theftOverrides[ix],...payload};else state.theftOverrides.push({id:`ft-${Date.now()}`,...payload});saveState();populateGoalYearsOnly();$('#theftYear').innerHTML=years().map(y=>`<option>${y}</option>`).join('');$('#theftYear').value=payload.year;renderThefts();renderDashboard();renderStatus();toast(ix>=0?'Quantidade de Furto outros atualizada.':'Quantidade de Furto outros cadastrada.');};
+$('#theftQtyForm').onsubmit=e=>{e.preventDefault();requireEditAccess(()=>{const payload={year:+$('#theftQtyYear').value,month:+$('#theftQtyMonth').value,municipality:$('#theftQtyMunicipality').value,count:+$('#theftQtyValue').value,updatedAt:new Date().toISOString()};if(payload.count<0||!Number.isFinite(payload.count))return;state.theftOverrides=state.theftOverrides||[];const ix=state.theftOverrides.findIndex(r=>+r.year===payload.year&&+r.month===payload.month&&r.municipality===payload.municipality);if(ix>=0)state.theftOverrides[ix]={...state.theftOverrides[ix],...payload};else state.theftOverrides.push({id:`ft-${Date.now()}`,...payload});saveState();populateGoalYearsOnly();$('#theftYear').innerHTML=years().map(y=>`<option>${y}</option>`).join('');$('#theftYear').value=payload.year;renderThefts();renderDashboard();renderStatus();toast(ix>=0?'Quantidade de Furto outros atualizada.':'Quantidade de Furto outros cadastrada.');});};
 $('#clearTheftQty').onclick=()=>{$('#theftQtyForm').reset();$('#theftQtyYear').value=$('#theftYear').value||years()[0];};
 ['compYearA','compYearB','compMetric'].forEach(id=>$('#'+id).onchange=renderComparative);
 $('#theftYear').onchange=renderThefts;
 $('#theftExportCsv').onclick=()=>download(`furto-outros-${$('#theftYear').value}.csv`,theftCsvText(),'text/csv;charset=utf-8');
 $('#exportJson').onclick=()=>download(`backup-criminal-${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(state,null,2),'application/json');
 $('#exportCsv').onclick=$('#exportCsvTop').onclick=()=>download(`historicos-criminal-${new Date().toISOString().slice(0,10)}.csv`,csvText(),'text/csv;charset=utf-8');
-$('#importJson').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!x.occurrences||!x.theftLegacy)throw Error();x.goals=x.goals||[];x.theftOverrides=x.theftOverrides||[];state=x;saveState();populate();renderDashboard();renderStatus();toast('Backup restaurado com sucesso.');}catch{alert('Arquivo de backup inválido.');}};
-$('#resetData').onclick=()=>{if(!confirm('Restaurar os dados originais importados da planilha? Registros e metas adicionados nesta versão serão removidos.'))return;localStorage.removeItem(KEY);localStorage.removeItem(PREV_KEY);localStorage.removeItem(OLD_KEY);state=blankState();saveState();populate();renderDashboard();renderStatus();toast('Base original restaurada.');};
+$('#importJson').onchange=async e=>{const f=e.target.files[0];if(!f)return;if(!editAuthorized){e.target.value='';openAuth(()=>$('#importJson').click());return;}try{const x=JSON.parse(await f.text());if(!x.occurrences||!x.theftLegacy)throw Error();x.goals=x.goals||[];x.theftOverrides=x.theftOverrides||[];state=x;saveState();populate();renderDashboard();renderStatus();toast('Backup restaurado com sucesso.');}catch{alert('Arquivo de backup inválido.');}};
+$('#resetData').onclick=()=>requireEditAccess(()=>{if(!confirm('Restaurar os dados originais importados da planilha? Registros e metas adicionados nesta versão serão removidos.'))return;localStorage.removeItem(KEY);localStorage.removeItem(PREV_KEY);localStorage.removeItem(OLD_KEY);state=blankState();saveState();populate();renderDashboard();renderStatus();toast('Base original restaurada.');});
+
+$('#editAccessBtn').onclick=()=>{if(editAuthorized)logoutEdit();else openAuth();};
+$('#authClose').onclick=closeAuth;
+$('#authModal').onclick=e=>{if(e.target===$('#authModal'))closeAuth();};
+$('#authForm').onsubmit=e=>{
+  e.preventDefault();
+  if($('#authLogin').value===EDIT_LOGIN && $('#authPassword').value===EDIT_PASSWORD){
+    editAuthorized=true;
+    sessionStorage.setItem(EDIT_SESSION_KEY,'1');
+    updateEditAccessUI();
+    const action=pendingEditAction;
+    $('#authModal').classList.remove('show');
+    $('#authModal').setAttribute('aria-hidden','true');
+    pendingEditAction=null;
+    toast('Modo de edição liberado.');
+    if(action)setTimeout(action,0);
+  }else{
+    $('#authError').textContent='Login ou senha incorretos.';
+    $('#authPassword').value='';
+    $('#authPassword').focus();
+  }
+};
+updateEditAccessUI();
 
 async function bootstrap(){
   await loadFirebaseState();
+  // Garante que as metas oficiais importadas da planilha modelo também sejam gravadas no Firebase.
+  await pushFirebaseNow();
   populate();
   $('#theftYear').innerHTML=years().map(y=>`<option>${y}</option>`).join('');
   $('#theftYear').value=years()[0];
