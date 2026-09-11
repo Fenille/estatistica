@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Análise Criminal • 2ª Cia</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="shield">2ª</div><div><strong>Análise Criminal</strong><span>18º BPM/I • 2ª Cia</span></div></div>
+      <nav>
+        <button class="nav-btn active" data-view="dashboard">▦ <span>Dashboard</span></button>
+        <button class="nav-btn" data-view="thefts">▤ <span>Furto outros</span></button>
+        <button class="nav-btn" data-view="new">＋ <span>Novo histórico</span></button>
+        <button class="nav-btn" data-view="records">☷ <span>Base de dados</span></button>
+        <button class="nav-btn" data-view="goals">◎ <span>Metas</span></button>
+        <button class="nav-btn" data-view="comparative">↗ <span>Comparativos</span></button>
+        <button class="nav-btn" data-view="settings">⚙ <span>Dados & Backup</span></button>
+      </nav>
+      <div class="sidebar-foot"><span class="dot" id="firebaseDot"></span><span id="firebaseLabel">Conectando ao Firebase...</span><br><small id="firebaseSub">criminal-76994</small></div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div><h1 id="pageTitle">Dashboard Criminal</h1><p id="pageSubtitle">Visão consolidada e dinâmica dos indicadores da 2ª Cia</p></div>
+        <div class="top-actions"><button class="btn secondary" id="exportCsvTop">Exportar CSV</button><button class="btn primary" data-go="new">+ Registrar delito</button></div>
+      </header>
+
+      <section id="dashboard" class="view active">
+        <div class="filterbar filterbar-main">
+          <select id="filterYear"></select>
+          <select id="filterPeriodType"><option value="YEAR">Ano inteiro</option><option value="MONTH">Por mês</option><option value="BIMONTH">Por bimestre</option></select>
+          <select id="filterPeriodValue" class="hidden"></select>
+          <select id="filterGroup"><option value="ALL">Toda 2ª Cia</option><option>Martinópolis</option><option>Rancharia</option><option>GPs</option></select>
+          <select id="filterCrime"><option value="ALL">Todos os indicadores</option><option value="HOMICÍDIO">Vítima de letalidade violenta</option><option value="VEICULOS">Furto/Roubo de veículos</option><option value="ROUBO - OUTROS">Roubo - outros</option></select>
+          <button class="btn ghost" id="resetFilters">Limpar filtros</button>
+        </div>
+        <div class="period-summary" id="periodSummary"></div>
+        <div class="kpi-grid" id="kpis"></div>
+        <article class="panel goal-overview-panel">
+          <div class="panel-head"><div><h3>Registrado × Meta</h3><p id="goalOverviewSubtitle">Acompanhamento dos indicadores no período selecionado</p></div><button class="link-btn" data-go="goals">Cadastrar / editar metas</button></div>
+          <div class="goal-overview-grid" id="goalOverview"></div>
+        </article>
+        <div class="grid two">
+          <article class="panel"><div class="panel-head"><div><h3>Evolução mensal</h3><p>Ocorrências no ano selecionado</p></div><span class="badge" id="trendBadge">—</span></div><div id="monthlyChart" class="chart"></div></article>
+          <article class="panel"><div class="panel-head"><div><h3>Distribuição territorial</h3><p>No período selecionado</p></div></div><div id="territoryChart" class="chart"></div></article>
+        </div>
+        <div class="grid two">
+          <article class="panel"><div class="panel-head"><div><h3>Ranking por município</h3><p>Quantidade no período selecionado</p></div></div><div id="rankingChart" class="chart compact"></div></article>
+          <article class="panel"><div class="panel-head"><div><h3>Últimos históricos</h3><p>Registros mais recentes no período</p></div><button class="link-btn" data-go="records">Ver todos</button></div><div id="latestRecords"></div></article>
+        </div>
+      </section>
+
+      <section id="thefts" class="view">
+        <div class="filterbar theft-filterbar">
+          <select id="theftYear"></select>
+          <button class="btn secondary" id="theftExportCsv">Exportar Furto outros</button>
+        </div>
+        <article class="panel theft-entry-panel">
+          <div class="panel-head wrap"><div><h3>Cadastro quantitativo — Furto outros</h3><p>Informe somente o total mensal do município. Não há meta para este indicador.</p></div><span class="badge">LANÇAMENTO MENSAL</span></div>
+          <form id="theftQtyForm" class="theft-qty-form">
+            <div class="form-grid">
+              <label>Ano<select id="theftQtyYear"></select></label>
+              <label>Mês<select id="theftQtyMonth"></select></label>
+              <label>Município<select id="theftQtyMunicipality"></select></label>
+              <label>Quantidade<input id="theftQtyValue" type="number" min="0" step="1" required placeholder="Ex.: 12"></label>
+            </div>
+            <div class="goal-help">Ao salvar, o valor informado passa a ser o <b>total oficial daquele mês e município</b>. Se já existir valor importado da planilha, ele será substituído apenas neste ponto, sem duplicidade.</div>
+            <div class="form-actions"><button type="button" class="btn secondary" id="clearTheftQty">Limpar</button><button class="btn primary" type="submit">Salvar quantidade</button></div>
+          </form>
+        </article>
+        <div class="period-summary" id="theftSummary"></div>
+        <div class="kpi-grid" id="theftKpis"></div>
+        <article class="panel theft-table-panel">
+          <div class="panel-head wrap"><div><h3>Furto outros — quadro estatístico</h3><p>Mesma estrutura da aba Furtos da planilha original, atualizada automaticamente pelos históricos.</p></div><span class="badge" id="theftYearBadge">—</span></div>
+          <div class="table-wrap theft-table-wrap"><table class="theft-table"><thead><tr><th>Município</th><th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th><th>Total</th><th>Média</th><th>População</th><th>Furto/100 mil hab.</th><th>Meses</th></tr></thead><tbody id="theftTableBody"></tbody></table></div>
+        </article>
+        <div class="grid two">
+          <article class="panel"><div class="panel-head"><div><h3>1º e 2º semestre</h3><p>Total consolidado da 2ª Cia</p></div></div><div id="theftSemesterCards" class="semester-grid"></div></article>
+          <article class="panel"><div class="panel-head"><div><h3>Comparação com ano anterior</h3><p>Variação mensal da 2ª Cia</p></div></div><div id="theftYoY" class="chart"></div></article>
+        </div>
+      </section>
+
+      <section id="new" class="view">
+        <div class="form-layout">
+          <article class="panel form-panel">
+            <div class="panel-head"><div><h3>Novo histórico de delito</h3><p>Ao salvar, os indicadores são recalculados automaticamente.</p></div></div>
+            <form id="recordForm">
+              <input type="hidden" id="recordId"/>
+              <div class="form-grid">
+                <label>Data<input type="date" id="recordDate" required></label>
+                <label>Município<select id="recordMunicipality" required></select></label>
+                <label>Delito<select id="recordCrime" required><option value="">Selecione...</option><option>FURTO DE VEÍCULO</option><option>ROUBO - OUTROS</option><option>ROUBO DE VEÍCULO</option><option>HOMICÍDIO</option><option>TENTATIVA DE HOMICÍDIO</option><option>OUTRO</option></select></label>
+                <label>Grupo<input id="recordGroup" readonly></label>
+              </div>
+              <label>Histórico<textarea id="recordHistory" rows="7" placeholder="Descreva de forma objetiva: local, meio empregado, objeto, autoria, prisão/apreensão, recuperação etc." required></textarea></label>
+              <div class="form-grid compact-fields">
+                <label>Resultado<select id="recordResult"><option value="">Não informado</option><option>Flagrante PM</option><option>Autor identificado</option><option>Objeto/veículo localizado</option><option>Em investigação</option></select></label>
+                <label>Observação<input id="recordNote" placeholder="Opcional"></label>
+              </div>
+              <div class="auto-class" id="autoClass">Selecione município e delito para visualizar a classificação automática.</div>
+              <div class="form-actions"><button type="button" class="btn secondary" id="clearForm">Limpar</button><button class="btn primary" type="submit">Salvar e atualizar estatísticas</button></div>
+            </form>
+          </article>
+          <aside class="panel side-help"><h3>Classificação automática</h3><p>O sistema identifica sozinho o agrupamento territorial e o indicador.</p><div class="rule"><b>Martinópolis</b><span>Município isolado</span></div><div class="rule"><b>Rancharia</b><span>Município isolado</span></div><div class="rule"><b>GPs</b><span>Caiabu, Indiana, Taciba, Nantes, Iepê e João Ramalho</span></div><hr><p class="muted">Furto/roubo de veículo, roubos outros e homicídios alimentam automaticamente os indicadores bonificáveis.</p></aside>
+        </div>
+      </section>
+
+      <section id="records" class="view">
+        <article class="panel">
+          <div class="panel-head wrap"><div><h3>Base de históricos</h3><p>Pesquisa, edição e exclusão dos registros.</p></div><div class="table-filters"><input id="searchRecords" placeholder="Buscar no histórico..."><select id="recordsMunicipality"><option value="ALL">Todos os municípios</option></select><select id="recordsCrime"><option value="ALL">Todos os delitos</option></select></div></div>
+          <div class="table-wrap"><table><thead><tr><th>Data</th><th>Delito</th><th>Município</th><th>Grupo</th><th>Histórico</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table></div>
+        </article>
+      </section>
+
+      <section id="goals" class="view">
+        <div class="form-layout goals-layout">
+          <article class="panel form-panel">
+            <div class="panel-head"><div><h3>Cadastrar meta mensal</h3><p>Cadastre a meta por ano, mês, território e tipo de delito. Furto outros não utiliza meta.</p></div></div>
+            <form id="goalForm">
+              <input type="hidden" id="goalId"/>
+              <div class="form-grid">
+                <label>Ano<select id="goalYear"></select></label>
+                <label>Mês<select id="goalMonth"></select></label>
+                <label>Território<select id="goalGroup"><option value="ALL">Toda 2ª Cia</option><option>Martinópolis</option><option>Rancharia</option><option>GPs</option></select></label>
+                <label>Tipo de delito<select id="goalMetric"><option value="VEICULOS">Furto/Roubo de veículos</option><option value="ROUBO - OUTROS">Roubo - outros</option><option value="HOMICÍDIO">Letalidade violenta</option></select></label>
+                <label>Meta máxima<input id="goalValue" type="number" min="0" step="1" required placeholder="Ex.: 12"></label>
+              </div>
+              <div class="goal-help">Para indicadores criminais, a meta é tratada como <b>limite máximo desejado</b>. Assim, registrado ≤ meta aparece como dentro da meta.</div>
+              <div class="form-actions"><button type="button" class="btn secondary" id="clearGoalForm">Limpar</button><button class="btn primary" type="submit">Salvar meta</button></div>
+            </form>
+          </article>
+          <aside class="panel side-help"><h3>Como funciona no bimestre</h3><p>As metas mensais dos dois meses são somadas automaticamente.</p><div class="rule"><b>Exemplo</b><span>Janeiro = 10 e Fevereiro = 8 → meta do 1º bimestre = 18.</span></div><div class="rule"><b>Território</b><span>Você pode criar metas para toda a 2ª Cia ou separadamente para Martinópolis, Rancharia e GPs.</span></div></aside>
+        </div>
+        <article class="panel">
+          <div class="panel-head wrap"><div><h3>Metas cadastradas</h3><p>Edite ou exclua metas já definidas.</p></div><div class="table-filters"><select id="goalFilterYear"></select><select id="goalFilterGroup"><option value="ALL_FILTER">Todos os territórios</option><option value="ALL">Toda 2ª Cia</option><option>Martinópolis</option><option>Rancharia</option><option>GPs</option></select></div></div>
+          <div class="table-wrap"><table><thead><tr><th>Ano</th><th>Mês</th><th>Território</th><th>Indicador</th><th>Meta</th><th></th></tr></thead><tbody id="goalsBody"></tbody></table></div>
+        </article>
+      </section>
+
+      <section id="comparative" class="view">
+        <div class="filterbar"><select id="compYearA"></select><span class="versus">×</span><select id="compYearB"></select><select id="compMetric"><option value="VEICULOS">Furto/Roubo de veículos</option><option value="ROUBO - OUTROS">Roubo - outros</option><option value="HOMICÍDIO">Letalidade violenta</option></select></div>
+        <div class="kpi-grid" id="compKpis"></div>
+        <div class="grid two"><article class="panel"><div class="panel-head"><div><h3>Comparativo mensal</h3><p id="compSubtitle">—</p></div></div><div id="comparisonChart" class="chart"></div></article><article class="panel"><div class="panel-head"><div><h3>Municípios</h3><p>Variação entre os períodos</p></div></div><div id="comparisonRanking" class="chart compact"></div></article></div>
+      </section>
+
+      <section id="settings" class="view">
+        <div class="grid two">
+          <article class="panel"><h3>Backup da base</h3><p>Exporte a base completa, incluindo as metas cadastradas e os lançamentos quantitativos de Furto outros.</p><div class="stack"><button class="btn primary" id="exportJson">Exportar backup JSON</button><button class="btn secondary" id="exportCsv">Exportar históricos CSV</button></div></article>
+          <article class="panel"><h3>Importar backup</h3><p>Restaure um arquivo JSON gerado por este sistema.</p><label class="file-drop">Selecionar backup<input type="file" id="importJson" accept="application/json"></label></article>
+          <article class="panel danger-zone"><h3>Firebase Realtime Database</h3><p>A base principal desta versão está conectada ao projeto <b>criminal-76994</b>. O navegador mantém apenas uma cópia local de segurança para contingência/offline.</p><button class="btn danger" id="resetData">Restaurar dados originais da planilha</button></article>
+          <article class="panel"><h3>Base importada</h3><div id="dataStatus" class="status-list"></div></article>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div id="toast" class="toast"></div>
+  <script src="seed-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

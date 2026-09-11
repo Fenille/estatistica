@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "criminal2cia": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
