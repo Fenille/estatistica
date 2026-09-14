@@ -64,9 +64,19 @@ function mergeModelGoals(x){
   return x;
 }
 function blankState(){return mergeModelGoals({occurrences:clone(window.SEED_DATA.occurrences),theftLegacy:clone(window.SEED_DATA.theftLegacy),theftOverrides:[],population:window.SEED_DATA.population,goals:[]});}
+function mergeSeedTheftLegacy(rows){
+  const out=Array.isArray(rows)?rows:[];
+  for(const seed of (window.SEED_DATA.theftLegacy||[])){
+    const exists=out.some(r=>+r.year===+seed.year&&+r.month===+seed.month&&r.municipality===seed.municipality);
+    if(!exists)out.push(clone(seed));
+  }
+  return out;
+}
 function normalizeState(x){
   if(!x||!Array.isArray(x.occurrences))return null;
-  x.theftLegacy=Array.isArray(x.theftLegacy)?x.theftLegacy:clone(window.SEED_DATA.theftLegacy);
+  // Migração automática: preserva a base do Firebase e acrescenta apenas
+  // meses oficiais ausentes da base embarcada (inclui Furto outros 2024).
+  x.theftLegacy=mergeSeedTheftLegacy(x.theftLegacy);
   x.theftOverrides=Array.isArray(x.theftOverrides)?x.theftOverrides:[];
   x.population=x.population||window.SEED_DATA.population;
   return mergeModelGoals(x);
@@ -122,6 +132,8 @@ async function loadFirebaseState(){
     if(remote){
       state=remote;
       localStorage.setItem(KEY,JSON.stringify(state));
+      // Persiste eventuais migrações de dados-base no Firebase.
+      await firebaseRequest('PUT','state',state);
     }else{
       state=loadLocalState();
       await firebaseRequest('PUT','state',state);

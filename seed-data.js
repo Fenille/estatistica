@@ -1181,6 +1181,582 @@ window.SEED_DATA = {
       "month": 12,
       "municipality": "João Ramalho",
       "count": 2
+    },
+    {
+      "count": 26,
+      "month": 1,
+      "municipality": "Martinópolis",
+      "year": 2024
+    },
+    {
+      "count": 18,
+      "month": 2,
+      "municipality": "Martinópolis",
+      "year": 2024
+    },
+    {
+      "count": 17,
+      "month": 3,
+      "municipality": "Martinópolis",
+      "year": 2024
+    },
+    {
+      "count": 28,
+      "month": 4,
+      "municipality": "Martinópolis",
+      "year": 2024
+    },
+    {
+      "count": 20,
+      "month": 5,
+      "municipality": "Martinópolis",
+      "year": 2024
+    },
+    {
+      "count": 16,
+      "month": 6,
+      "municipality": "Martinópolis",
+      "year": 2024
+    },
+    {
+      "count": 14,
+      "month": 7,
+      "municipality": "Martinópolis",
+      "year": 2024
+    },
+    {
+      "count": 13,
+      "month": 8,
+      "municipality": "Martinópolis",
+      "year": 2024
+    },
+    {
+      "count": 15,
+      "month": 9,
+      "municipality": "Martinópolis",
+      "year": 2024
+    },
+    {
+      "count": 23,
+      "month": 10,
+      "municipality": "Martinópolis",
+      "year": 2024
+    },
+    {
+      "count": 10,
+      "month": 11,
+      "municipality": "Martinópolis",
+      "year": 2024
+    },
+    {
+      "count": 9,
+      "month": 12,
+      "municipality": "Martinópolis",
+      "year": 2024
+    },
+    {
+      "count": 19,
+      "month": 1,
+      "municipality": "Rancharia",
+      "year": 2024
+    },
+    {
+      "count": 16,
+      "month": 2,
+      "municipality": "Rancharia",
+      "year": 2024
+    },
+    {
+      "count": 14,
+      "month": 3,
+      "municipality": "Rancharia",
+      "year": 2024
+    },
+    {
+      "count": 15,
+      "month": 4,
+      "municipality": "Rancharia",
+      "year": 2024
+    },
+    {
+      "count": 12,
+      "month": 5,
+      "municipality": "Rancharia",
+      "year": 2024
+    },
+    {
+      "count": 6,
+      "month": 6,
+      "municipality": "Rancharia",
+      "year": 2024
+    },
+    {
+      "count": 16,
+      "month": 7,
+      "municipality": "Rancharia",
+      "year": 2024
+    },
+    {
+      "count": 16,
+      "month": 8,
+      "municipality": "Rancharia",
+      "year": 2024
+    },
+    {
+      "count": 22,
+      "month": 9,
+      "municipality": "Rancharia",
+      "year": 2024
+    },
+    {
+      "count": 31,
+      "month": 10,
+      "municipality": "Rancharia",
+      "year": 2024
+    },
+    {
+      "count": 30,
+      "month": 11,
+      "municipality": "Rancharia",
+      "year": 2024
+    },
+    {
+      "count": 22,
+      "month": 12,
+      "municipality": "Rancharia",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 1,
+      "municipality": "Caiabu",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 2,
+      "municipality": "Caiabu",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 3,
+      "municipality": "Caiabu",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 4,
+      "municipality": "Caiabu",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 5,
+      "municipality": "Caiabu",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 6,
+      "municipality": "Caiabu",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 7,
+      "municipality": "Caiabu",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 8,
+      "municipality": "Caiabu",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 9,
+      "municipality": "Caiabu",
+      "year": 2024
+    },
+    {
+      "count": 3,
+      "month": 10,
+      "municipality": "Caiabu",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 11,
+      "municipality": "Caiabu",
+      "year": 2024
+    },
+    {
+      "count": 4,
+      "month": 12,
+      "municipality": "Caiabu",
+      "year": 2024
+    },
+    {
+      "count": 3,
+      "month": 1,
+      "municipality": "Indiana",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 2,
+      "municipality": "Indiana",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 3,
+      "municipality": "Indiana",
+      "year": 2024
+    },
+    {
+      "count": 3,
+      "month": 4,
+      "municipality": "Indiana",
+      "year": 2024
+    },
+    {
+      "count": 3,
+      "month": 5,
+      "municipality": "Indiana",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 6,
+      "municipality": "Indiana",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 7,
+      "municipality": "Indiana",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 8,
+      "municipality": "Indiana",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 9,
+      "municipality": "Indiana",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 10,
+      "municipality": "Indiana",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 11,
+      "municipality": "Indiana",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 12,
+      "municipality": "Indiana",
+      "year": 2024
+    },
+    {
+      "count": 3,
+      "month": 1,
+      "municipality": "Taciba",
+      "year": 2024
+    },
+    {
+      "count": 5,
+      "month": 2,
+      "municipality": "Taciba",
+      "year": 2024
+    },
+    {
+      "count": 3,
+      "month": 3,
+      "municipality": "Taciba",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 4,
+      "municipality": "Taciba",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 5,
+      "municipality": "Taciba",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 6,
+      "municipality": "Taciba",
+      "year": 2024
+    },
+    {
+      "count": 3,
+      "month": 7,
+      "municipality": "Taciba",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 8,
+      "municipality": "Taciba",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 9,
+      "municipality": "Taciba",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 10,
+      "municipality": "Taciba",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 11,
+      "municipality": "Taciba",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 12,
+      "municipality": "Taciba",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 1,
+      "municipality": "Nantes",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 2,
+      "municipality": "Nantes",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 3,
+      "municipality": "Nantes",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 4,
+      "municipality": "Nantes",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 5,
+      "municipality": "Nantes",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 6,
+      "municipality": "Nantes",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 7,
+      "municipality": "Nantes",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 8,
+      "municipality": "Nantes",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 9,
+      "municipality": "Nantes",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 10,
+      "municipality": "Nantes",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 11,
+      "municipality": "Nantes",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 12,
+      "municipality": "Nantes",
+      "year": 2024
+    },
+    {
+      "count": 5,
+      "month": 1,
+      "municipality": "Iepê",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 2,
+      "municipality": "Iepê",
+      "year": 2024
+    },
+    {
+      "count": 4,
+      "month": 3,
+      "municipality": "Iepê",
+      "year": 2024
+    },
+    {
+      "count": 5,
+      "month": 4,
+      "municipality": "Iepê",
+      "year": 2024
+    },
+    {
+      "count": 6,
+      "month": 5,
+      "municipality": "Iepê",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 6,
+      "municipality": "Iepê",
+      "year": 2024
+    },
+    {
+      "count": 5,
+      "month": 7,
+      "municipality": "Iepê",
+      "year": 2024
+    },
+    {
+      "count": 4,
+      "month": 8,
+      "municipality": "Iepê",
+      "year": 2024
+    },
+    {
+      "count": 7,
+      "month": 9,
+      "municipality": "Iepê",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 10,
+      "municipality": "Iepê",
+      "year": 2024
+    },
+    {
+      "count": 7,
+      "month": 11,
+      "municipality": "Iepê",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 12,
+      "municipality": "Iepê",
+      "year": 2024
+    },
+    {
+      "count": 5,
+      "month": 1,
+      "municipality": "João Ramalho",
+      "year": 2024
+    },
+    {
+      "count": 3,
+      "month": 2,
+      "municipality": "João Ramalho",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 3,
+      "municipality": "João Ramalho",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 4,
+      "municipality": "João Ramalho",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 5,
+      "municipality": "João Ramalho",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 6,
+      "municipality": "João Ramalho",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 7,
+      "municipality": "João Ramalho",
+      "year": 2024
+    },
+    {
+      "count": 3,
+      "month": 8,
+      "municipality": "João Ramalho",
+      "year": 2024
+    },
+    {
+      "count": 0,
+      "month": 9,
+      "municipality": "João Ramalho",
+      "year": 2024
+    },
+    {
+      "count": 3,
+      "month": 10,
+      "municipality": "João Ramalho",
+      "year": 2024
+    },
+    {
+      "count": 2,
+      "month": 11,
+      "municipality": "João Ramalho",
+      "year": 2024
+    },
+    {
+      "count": 1,
+      "month": 12,
+      "municipality": "João Ramalho",
+      "year": 2024
     }
   ],
   "goals": [
