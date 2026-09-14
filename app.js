@@ -139,7 +139,21 @@ function groupOf(m){return m==='Martinópolis'||m==='Rancharia'?m:'GPs';}
 function indicatorOf(c){if(c==='HOMICÍDIO')return 'Vítima de letalidade violenta';if(c==='FURTO DE VEÍCULO'||c==='ROUBO DE VEÍCULO')return 'Furto/Roubo de veículos';if(c==='ROUBO - OUTROS')return 'Roubo - outros';if(c==='FURTO')return 'Furtos totais';return 'Outros';}
 function fmtDate(v){if(!v)return '—';const [y,m,d]=v.split('-');return `${d}/${m}/${y}`;}
 function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2300);}
-function years(){const currentYear=new Date().getFullYear();const ys=new Set([2025,2026,currentYear]);state.occurrences.forEach(r=>ys.add(+r.date.slice(0,4)));state.theftLegacy.forEach(r=>ys.add(+r.year));(state.theftOverrides||[]).forEach(r=>ys.add(+r.year));state.goals.forEach(g=>ys.add(+g.year));return [...ys].sort((a,b)=>b-a);}
+function years(){
+  const currentYear=new Date().getFullYear();
+  const found=[];
+  state.occurrences.forEach(r=>{const y=+(r.date||'').slice(0,4);if(y)found.push(y);});
+  state.theftLegacy.forEach(r=>{const y=+r.year;if(y)found.push(y);});
+  (state.theftOverrides||[]).forEach(r=>{const y=+r.year;if(y)found.push(y);});
+  state.goals.forEach(g=>{const y=+g.year;if(y)found.push(y);});
+  // Mantém uma sequência contínua de anos e deixa o próximo ano disponível
+  // automaticamente em TODOS os seletores do sistema.
+  const minYear=Math.min(2024,...found.filter(Boolean));
+  const maxYear=Math.max(currentYear+1,...found.filter(Boolean));
+  const ys=[];
+  for(let y=maxYear;y>=minYear;y--)ys.push(y);
+  return ys;
+}
 function monthsForPeriod(type,value){if(type==='MONTH')return [+value];if(type==='BIMONTH'){const start=(+value-1)*2+1;return [start,start+1];}return [1,2,3,4,5,6,7,8,9,10,11,12];}
 function selectedPeriod(){return {year:+$('#filterYear').value,type:$('#filterPeriodType').value,value:+($('#filterPeriodValue').value||0),months:monthsForPeriod($('#filterPeriodType').value,+($('#filterPeriodValue').value||0))};}
 function periodLabel(type,value,year){if(type==='MONTH')return `${MONTHS_LONG[+value-1]} de ${year}`;if(type==='BIMONTH')return `${value}º bimestre de ${year}`;return `Ano de ${year}`;}
@@ -191,10 +205,20 @@ function renderRanking(year,metric,months,el=$('#rankingChart')){const vals=MUNI
 function barList(el,vals){const max=Math.max(1,...vals.map(x=>x[1]));el.innerHTML=`<div style="width:100%;padding-top:4px">${vals.map(([n,v])=>`<div style="display:grid;grid-template-columns:110px 1fr 35px;gap:9px;align-items:center;margin:11px 0;font-size:11px"><span style="color:#aeb6c1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${n}</span><div style="height:9px;background:#20262d;border-radius:9px;overflow:hidden"><div style="height:100%;width:${v/max*100}%;background:var(--yellow);border-radius:9px"></div></div><b>${v}</b></div>`).join('')}</div>`;}
 function renderLatest(year,months,group,metric){let rows=state.occurrences.filter(r=>+r.date.slice(0,4)===+year&&months.includes(+r.date.slice(5,7))&&(group==='ALL'||r.group===group)&&(metric==='ALL'||matchesMetric(r,metric))).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);$('#latestRecords').innerHTML=rows.map(r=>`<div class="latest-item"><div class="latest-date">${fmtDate(r.date)}</div><div><b>${r.crime} • ${r.municipality}</b><p>${r.history}</p></div><span class="pill">${r.group}</span></div>`).join('')||'<p>Sem registros no período.</p>';}
 function populate(){
-  const ys=years(),optsYears=ys.map(y=>`<option>${y}</option>`).join('');['filterYear','compYearA','compYearB','goalYear','goalFilterYear'].forEach(id=>$('#'+id).innerHTML=optsYears);
-  $('#filterYear').value=ys.includes(2026)?'2026':ys[0];$('#compYearA').value=ys.includes(2026)?'2026':ys[0];$('#compYearB').value=ys.includes(2025)?'2025':ys[Math.min(1,ys.length-1)];$('#goalYear').value=$('#filterYear').value;$('#goalFilterYear').value=$('#filterYear').value;
+  const ys=years(),optsYears=ys.map(y=>`<option>${y}</option>`).join('');
+  ['filterYear','compYearA','compYearB','goalYear','goalFilterYear','theftYear','theftQtyYear'].forEach(id=>$('#'+id).innerHTML=optsYears);
+  const currentYear=new Date().getFullYear();
+  const defaultYear=ys.includes(currentYear)?currentYear:ys[0];
+  $('#filterYear').value=defaultYear;
+  $('#compYearA').value=defaultYear;
+  $('#compYearB').value=ys.includes(currentYear-1)?currentYear-1:ys[Math.min(1,ys.length-1)];
+  $('#goalYear').value=defaultYear;
+  $('#goalFilterYear').value=defaultYear;
+  $('#theftYear').value=defaultYear;
+  $('#theftQtyYear').value=defaultYear;
   $('#goalMonth').innerHTML=MONTHS_LONG.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
-  $('#theftQtyYear').innerHTML=optsYears;$('#theftQtyYear').value=ys[0];$('#theftQtyMonth').innerHTML=MONTHS_LONG.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');$('#theftQtyMunicipality').innerHTML=MUNICIPALITIES.map(m=>`<option>${m}</option>`).join('');
+  $('#theftQtyMonth').innerHTML=MONTHS_LONG.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
+  $('#theftQtyMunicipality').innerHTML=MUNICIPALITIES.map(m=>`<option>${m}</option>`).join('');
   const opts=MUNICIPALITIES.map(m=>`<option>${m}</option>`).join('');$('#recordMunicipality').innerHTML='<option value="">Selecione...</option>'+opts;$('#recordsMunicipality').innerHTML='<option value="ALL">Todos os municípios</option>'+opts;refreshCrimeFilter();updatePeriodFilter();
 }
 function refreshCrimeFilter(){const crimes=[...new Set(state.occurrences.map(r=>r.crime))].sort();$('#recordsCrime').innerHTML='<option value="ALL">Todos os delitos</option>'+crimes.map(c=>`<option>${c}</option>`).join('');}
@@ -251,7 +275,7 @@ $$('.nav-btn').forEach(b=>b.onclick=()=>{const target=b.dataset.view;if(target==
 $$('[data-go]').forEach(b=>b.onclick=()=>{const target=b.dataset.go;if(target==='new')requireEditAccess(()=>showView(target));else showView(target);});
 ['filterYear','filterGroup','filterCrime','filterPeriodValue'].forEach(id=>$('#'+id).onchange=renderDashboard);
 $('#filterPeriodType').onchange=()=>{updatePeriodFilter();renderDashboard();};
-$('#resetFilters').onclick=()=>{$('#filterYear').value='2026';$('#filterPeriodType').value='YEAR';updatePeriodFilter();$('#filterGroup').value='ALL';$('#filterCrime').value='ALL';renderDashboard();};
+$('#resetFilters').onclick=()=>{$('#filterYear').value=String(new Date().getFullYear());$('#filterPeriodType').value='YEAR';updatePeriodFilter();$('#filterGroup').value='ALL';$('#filterCrime').value='ALL';renderDashboard();};
 $('#recordMunicipality').onchange=updateAutoClass;$('#recordCrime').onchange=updateAutoClass;
 $('#clearForm').onclick=()=>{$('#recordForm').reset();$('#recordId').value='';updateAutoClass();};
 $('#recordForm').onsubmit=e=>{e.preventDefault();requireEditAccess(()=>{const id=$('#recordId').value||`r-${Date.now()}`;const rec={id,date:$('#recordDate').value,municipality:$('#recordMunicipality').value,group:groupOf($('#recordMunicipality').value),crime:$('#recordCrime').value,history:$('#recordHistory').value.trim(),result:$('#recordResult').value,note:$('#recordNote').value.trim(),source:'Sistema',legacy:false,updatedAt:new Date().toISOString()};const ix=state.occurrences.findIndex(x=>x.id===id);if(ix>=0)state.occurrences[ix]={...state.occurrences[ix],...rec};else state.occurrences.push(rec);saveState();refreshCrimeFilter();$('#recordForm').reset();$('#recordId').value='';updateAutoClass();renderDashboard();toast(ix>=0?'Registro atualizado.':'Histórico salvo e estatísticas atualizadas.');});};
@@ -266,7 +290,7 @@ $('#theftYear').onchange=renderThefts;
 $('#theftExportCsv').onclick=()=>download(`furto-outros-${$('#theftYear').value}.csv`,theftCsvText(),'text/csv;charset=utf-8');
 $('#exportJson').onclick=()=>download(`backup-criminal-${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(state,null,2),'application/json');
 $('#exportCsv').onclick=$('#exportCsvTop').onclick=()=>download(`historicos-criminal-${new Date().toISOString().slice(0,10)}.csv`,csvText(),'text/csv;charset=utf-8');
-$('#importJson').onchange=async e=>{const f=e.target.files[0];if(!f)return;if(!editAuthorized){e.target.value='';openAuth(()=>$('#importJson').click());return;}try{const x=JSON.parse(await f.text());if(!x.occurrences||!x.theftLegacy)throw Error();x.goals=x.goals||[];x.theftOverrides=x.theftOverrides||[];state=x;saveState();populate();renderDashboard();renderStatus();toast('Backup restaurado com sucesso.');}catch{alert('Arquivo de backup inválido.');}};
+$('#importJson').onchange=async e=>{const f=e.target.files[0];if(!f)return;if(!editAuthorized){e.target.value='';openAuth(()=>$('#importJson').click());return;}try{const x=JSON.parse(await f.text());if(!x.occurrences||!x.theftLegacy)throw Error();x.goals=x.goals||[];x.theftOverrides=x.theftOverrides||[];state=x;saveState();populate();renderDashboard();renderThefts();renderGoals();renderComparative();renderStatus();toast('Backup restaurado com sucesso.');}catch{alert('Arquivo de backup inválido.');}};
 $('#resetData').onclick=()=>requireEditAccess(()=>{if(!confirm('Restaurar os dados originais importados da planilha? Registros e metas adicionados nesta versão serão removidos.'))return;localStorage.removeItem(KEY);localStorage.removeItem(PREV_KEY);localStorage.removeItem(OLD_KEY);state=blankState();saveState();populate();renderDashboard();renderStatus();toast('Base original restaurada.');});
 
 $('#editAccessBtn').onclick=()=>{if(editAuthorized)logoutEdit();else openAuth();};
@@ -297,8 +321,6 @@ async function bootstrap(){
   // Garante que as metas oficiais importadas da planilha modelo também sejam gravadas no Firebase.
   await pushFirebaseNow();
   populate();
-  $('#theftYear').innerHTML=years().map(y=>`<option>${y}</option>`).join('');
-  $('#theftYear').value=years()[0];
   $('#recordDate').value=new Date().toISOString().slice(0,10);
   renderDashboard();
   renderStatus();
